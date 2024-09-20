@@ -1,0 +1,5 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = "mysql://prisma_user:prisma_password@localhost:3306/unitres"
+}
