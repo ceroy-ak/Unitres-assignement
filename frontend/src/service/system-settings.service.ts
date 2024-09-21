@@ -39,9 +39,27 @@ const updateUISettings = async (data: IUpdateUISettingsRequestBody) => {
   }
 };
 
+const deleteMenuForRole = async (roleId: number, menuId: number) => {
+  await http.delete(`/system-settings/role/${roleId}/menu/${menuId}`);
+};
+
+const addMenuForRole = async (
+  roleId: number,
+  menuTitle: string,
+  menuRoute: string
+) => {
+  await http.post(`/system-settings/create-menu`, {
+    title: menuTitle,
+    route: menuRoute,
+    roleId,
+  });
+};
+
 const SystemSettingsService = {
   getAllSystemSettings,
   updateUISettings,
+  deleteMenuForRole,
+  addMenuForRole,
 };
 
 export default SystemSettingsService;

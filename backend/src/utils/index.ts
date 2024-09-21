@@ -5,6 +5,7 @@ import { ZodError, ZodSchema } from "zod";
 import * as jose from "jose";
 import { UnauthorizedError } from "../error";
 import { UsersModel } from "../models/user.model";
+import { TOKEN_STRING } from "../constants";
 
 interface IHashAndSalt {
   hash: string;
@@ -82,9 +83,8 @@ const getJwtSecretKey = () => {
   return new TextEncoder().encode(secretKey);
 };
 
-export const getUserInfoFromRequest = (
-  req: Request
-): Users | undefined | null => {
-  // @ts-ignore - Add user to the request object
-  return req?.user;
+export const getUserInfoFromRequest = async (req: Request): Promise<Users> => {
+  const cookies = req.cookies;
+  const user = await getUserFromJwtToken(cookies[TOKEN_STRING]);
+  return user;
 };

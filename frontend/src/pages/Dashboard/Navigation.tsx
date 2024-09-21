@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { UserState } from "@/redux/store";
 import AuthService from "@/service/auth.service";
 import { Menu } from "@/service/menus.service";
 import { LogOut } from "lucide-react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface INavigationProps {
   menus: Menu[];
@@ -11,6 +14,7 @@ interface INavigationProps {
 }
 export default function Navigation({ menus, isMenuLoading }: INavigationProps) {
   const navigate = useNavigate();
+  const userState = useSelector((state: any) => state as UserState);
   const handelLogout = async () => {
     await AuthService.logout();
     navigate("/login");
@@ -21,12 +25,17 @@ export default function Navigation({ menus, isMenuLoading }: INavigationProps) {
   };
   return (
     <div
-      className="w-full bg-slate-900 h-[100vh] sticky"
+      className="w-full bg-slate-900 h-[100vh] sticky flex flex-col items-center"
       style={{
         position: "sticky",
       }}
     >
-      <div className="flex flex-col justify-between h-full">
+      <Avatar className="mt-6">
+        <AvatarFallback>
+          {userState?.name?.slice(0, 2)?.toUpperCase() || "US"}
+        </AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col justify-between h-full w-full">
         {!isMenuLoading && menus.length > 0 && (
           <div className="flex flex-col items-center justify-start w-full gap-4 mt-5">
             {menus.map((menu) => (

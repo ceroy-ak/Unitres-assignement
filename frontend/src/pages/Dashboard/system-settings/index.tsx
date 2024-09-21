@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import UiSettingsUpdateDialog from "./ui-settings.dialog";
+import MenuSettingsSheet from "./menu-settings.sheet";
 
 export default function SystemSettings() {
   const [allSettings, setAllSettings] = useState<ISystemSettings[]>([]);
@@ -14,8 +15,11 @@ export default function SystemSettings() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdateUiSettingsDialogOpen, setIsUpdateUiSettingsDialogOpen] =
     useState(false);
-  const fetchAllSettings = async () => {
-    setIsLoading(true);
+  const [isUpdateMenusSheetOpen, setIsUpdateMenusSheetOpen] = useState(false);
+  const fetchAllSettings = async (dontShowSpinner = false) => {
+    if (!dontShowSpinner) {
+      setIsLoading(true);
+    }
     try {
       const allSettings = await SystemSettingsService.getAllSystemSettings();
       setAllSettings(allSettings);
@@ -23,8 +27,24 @@ export default function SystemSettings() {
       toast.error("Failed to fetch system settings");
       console.error(error);
     } finally {
-      setIsLoading(false);
+      if (!dontShowSpinner) {
+        setIsLoading(false);
+      }
     }
+  };
+
+  const handleMenuUpdated = async () => {
+    const updatedSettings = await SystemSettingsService.getAllSystemSettings();
+    setAllSettings(updatedSettings);
+    const selectedSetting = updatedSettings.find(
+      (setting) => setting.role.id === selectedSettings!.role.id
+    );
+    if (!selectedSetting) {
+      setIsUpdateMenusSheetOpen(false);
+      setSelectedSettings(null);
+      return;
+    }
+    setSelectedSettings(selectedSetting);
   };
 
   useEffect(() => {
@@ -50,7 +70,17 @@ export default function SystemSettings() {
           >
             <h2 className="text-xl font-bold mb-5">{setting.role.name}</h2>
             <hr />
-            <h3 className="font-bold">Menus</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold">Menus</h3>
+              <Edit2
+                size={18}
+                className="hover:scale-110 cursor-pointer"
+                onClick={() => {
+                  setIsUpdateMenusSheetOpen(true);
+                  setSelectedSettings(setting);
+                }}
+              />
+            </div>
             <ul>
               {setting.menus.map((menu) => (
                 <li>{menu.title}</li>
@@ -90,6 +120,14 @@ export default function SystemSettings() {
         onSettingsUpdated={fetchAllSettings}
         systemSettings={selectedSettings!}
       />
+      {selectedSettings && (
+        <MenuSettingsSheet
+          open={isUpdateMenusSheetOpen}
+          onClose={() => setIsUpdateMenusSheetOpen(false)}
+          onMenusUpdated={handleMenuUpdated}
+          systemSettings={selectedSettings!}
+        />
+      )}
     </div>
   );
 }

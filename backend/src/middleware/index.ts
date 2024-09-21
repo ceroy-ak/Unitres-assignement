@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { NotFoundError, UnauthorizedError } from "../error";
 import { TOKEN_STRING } from "../constants";
-import { getUserFromJwtToken, getUserInfoFromRequest } from "../utils";
+import { getUserFromJwtToken } from "../utils";
 import RolesModel from "../models/roles.model";
 
-export const validateJwtMiddleware = (
+export const validateJwtMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,7 +13,7 @@ export const validateJwtMiddleware = (
   if (!cookies?.[TOKEN_STRING]) {
     throw new UnauthorizedError("Unauthorized");
   }
-  const user = getUserFromJwtToken(cookies[TOKEN_STRING]);
+  const user = await getUserFromJwtToken(cookies[TOKEN_STRING]);
   // @ts-ignore - Add user to the request object
   req.user = user;
   next();

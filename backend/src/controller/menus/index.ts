@@ -9,7 +9,7 @@ const menusRouter = Router();
 menusRouter.use(validateJwtMiddleware);
 
 menusRouter.get("/", async (req, res) => {
-  const user = getUserInfoFromRequest(req);
+  const user = await getUserInfoFromRequest(req);
   if (!user) {
     throw new NotFoundError("User not found");
   }
@@ -24,7 +24,7 @@ menusRouter.get("/is-route-allowed", async (req, res) => {
     throw new BadRequestError("Invalid Request Parameters");
   }
 
-  const user = getUserInfoFromRequest(req);
+  const user = await getUserInfoFromRequest(req);
 
   if (!user) {
     throw new NotFoundError("User not found");

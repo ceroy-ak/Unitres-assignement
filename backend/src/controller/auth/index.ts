@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { loginBodySchema, LoginRequestBody } from "./schema";
-import { bodySchemaValidator } from "../../utils";
+import { bodySchemaValidator, getUserFromJwtToken } from "../../utils";
 import { LoginService } from "../../services/login.service";
 import { TOKEN_STRING } from "../../constants";
 import { UnauthorizedError } from "../../error";
@@ -32,6 +32,12 @@ authRouter.post(
     }
   }
 );
+
+authRouter.get("/me", async (req, res) => {
+  const user = await getUserFromJwtToken(req.cookies[TOKEN_STRING]);
+  const details = await LoginService.getMeDetails(user);
+  return res.send(details);
+});
 
 authRouter.post("/logout", async (_, res) => {
   res.clearCookie(TOKEN_STRING);
