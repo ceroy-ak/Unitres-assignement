@@ -16,9 +16,19 @@ export default function Dashboard() {
   }, []);
   return (
     <div className="flex w-full h-full">
-      <Navigation menus={menus} isMenuLoading={loading} />
-      <div className="h-[100vh] w-full">
-        <Outlet />
+      <div className="w-[15%]">
+        <Navigation menus={menus} isMenuLoading={loading} />
+      </div>
+      <div className="w-full flex flex-col">
+        <div className="w-full h-16 bg-slate-500 flex items-center justify-center">
+          <h1 className="text-2xl text-slate-50">This is Header</h1>
+        </div>
+        <div className="h-full">
+          <Outlet />
+        </div>
+        <div className="w-full h-16 bg-slate-500 flex items-center justify-center">
+          <h1 className="text-2xl text-slate-50">This is Footer</h1>
+        </div>
       </div>
     </div>
   );

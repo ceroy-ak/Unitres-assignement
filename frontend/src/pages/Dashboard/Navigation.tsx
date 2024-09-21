@@ -17,10 +17,15 @@ export default function Navigation({ menus, isMenuLoading }: INavigationProps) {
     toast.success("User logged out successfully");
   };
   const handleRouteNaviation = (menu: Menu) => {
-    navigate(`/dashboard${menu.route}?name=${menu.title}`);
+    navigate(`/dashboard${menu.route}`);
   };
   return (
-    <div className="w-[15%] bg-slate-900 h-[100vh] sticky">
+    <div
+      className="w-full bg-slate-900 h-[100vh] sticky"
+      style={{
+        position: "sticky",
+      }}
+    >
       <div className="flex flex-col justify-between h-full">
         {!isMenuLoading && menus.length > 0 && (
           <div className="flex flex-col items-center justify-start w-full gap-4 mt-5">
@@ -39,7 +44,7 @@ export default function Navigation({ menus, isMenuLoading }: INavigationProps) {
         {isMenuLoading && <div className="h-full"></div>}
         <Button
           variant="destructive"
-          className="w-full rounded-none flex items-center justify-center gap-5"
+          className="w-full rounded-none flex items-center justify-center gap-5 h-16"
           onClick={handelLogout}
         >
           Logout

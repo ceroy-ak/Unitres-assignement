@@ -23,11 +23,12 @@ model Users {
 }
 
 model Roles {
-  id        Int         @id @default(autoincrement())
-  name      String
-  isAdmin   Boolean
-  UserRoles UserRoles[]
-  RoleMenus RoleMenus[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  isAdmin        Boolean
+  UserRoles      UserRoles[]
+  RoleMenus      RoleMenus[]
+  RolesUIDisplay RolesUIDisplay[]
 }
 
 model UserRoles {
@@ -49,4 +50,13 @@ model RoleMenus {
   roleId Int
   menuId Int
   Roles  Roles @relation(fields: [roleId], references: [id])
+}
+
+model RolesUIDisplay {
+  id         Int     @id @default(autoincrement())
+  roleId     Int     @unique
+  showMenu   Boolean
+  showHeader Boolean
+  showFooter Boolean
+  Roles      Roles   @relation(fields: [roleId], references: [id])
 }

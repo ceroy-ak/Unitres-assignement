@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./controller/auth";
-import adminRouter from "./controller/admin";
 import menusRouter from "./controller/menus";
 import * as dotenv from "dotenv";
 import {
@@ -14,6 +13,9 @@ import {
   ServiceUnavailableError,
   UnauthorizedError,
 } from "./error";
+import systemSettingsRouter from "./controller/system-settings";
+import userManagementRouter from "./controller/user-management";
+import roleManagementRouter from "./controller/role-management";
 
 dotenv.config();
 
@@ -31,8 +33,10 @@ app.use(
 );
 
 app.use("/auth", authRouter);
-app.use("/admin", adminRouter);
 app.use("/menus", menusRouter);
+app.use("/system-settings", systemSettingsRouter);
+app.use("/user-management", userManagementRouter);
+app.use("/role-management", roleManagementRouter);
 
 // Global error handler middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

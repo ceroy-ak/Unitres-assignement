@@ -14,8 +14,15 @@ const getAllMenus = async () => {
   return [];
 };
 
+const getIsRouteAllowed = async (route: string): Promise<boolean> => {
+  const response = await http.get(`/menus/is-route-allowed?route=${route}`);
+  if (response.status !== 200) return false;
+  return (response.data as any)?.allowed || false;
+};
+
 const MenusService = {
   getAllMenus,
+  getIsRouteAllowed,
 };
 
 export default MenusService;
