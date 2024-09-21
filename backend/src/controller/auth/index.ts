@@ -34,9 +34,13 @@ authRouter.post(
 );
 
 authRouter.get("/me", async (req, res) => {
-  const user = await getUserFromJwtToken(req.cookies[TOKEN_STRING]);
-  const details = await LoginService.getMeDetails(user);
-  return res.send(details);
+  try {
+    const user = await getUserFromJwtToken(req.cookies[TOKEN_STRING]);
+    const details = await LoginService.getMeDetails(user);
+    return res.send(details);
+  } catch (error) {
+    return res.status(500).send({ error: "Unexpected server error" });
+  }
 });
 
 authRouter.post("/logout", async (_, res) => {

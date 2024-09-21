@@ -32,9 +32,9 @@ const getMeDetails = async (user: Users): Promise<IGetMeDetails> => {
   return {
     name: user.name,
     email: user.email,
-    showHeader: uiOptions?.showHeader || true,
-    showMenu: uiOptions?.showMenu || true,
-    showFooter: uiOptions?.showFooter || true,
+    showHeader: uiOptions?.showHeader!,
+    showMenu: uiOptions?.showMenu!,
+    showFooter: uiOptions?.showFooter!,
   };
 };
 export const LoginService = {

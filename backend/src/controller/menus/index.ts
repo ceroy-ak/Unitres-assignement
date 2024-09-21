@@ -3,13 +3,19 @@ import { validateJwtMiddleware } from "../../middleware";
 import { getUserInfoFromRequest } from "../../utils";
 import { MenuService } from "../../services/menus.service";
 import { BadRequestError, NotFoundError } from "../../error";
+import { Users } from "@prisma/client";
 
 const menusRouter = Router();
 
 menusRouter.use(validateJwtMiddleware);
 
 menusRouter.get("/", async (req, res) => {
-  const user = await getUserInfoFromRequest(req);
+  let user: Users;
+  try {
+    user = await getUserInfoFromRequest(req);
+  } catch (error) {
+    return res.send(500).send({ error: "Unexpected server error" });
+  }
   if (!user) {
     throw new NotFoundError("User not found");
   }
@@ -24,7 +30,12 @@ menusRouter.get("/is-route-allowed", async (req, res) => {
     throw new BadRequestError("Invalid Request Parameters");
   }
 
-  const user = await getUserInfoFromRequest(req);
+  let user: Users;
+  try {
+    user = await getUserInfoFromRequest(req);
+  } catch (error) {
+    return res.send(500).send({ error: "Unexpected server error" });
+  }
 
   if (!user) {
     throw new NotFoundError("User not found");

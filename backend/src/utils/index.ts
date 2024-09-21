@@ -58,6 +58,9 @@ export const generateCookieForUser = async (user: Users): Promise<string> => {
 };
 
 export const getUserFromJwtToken = async (token: string): Promise<Users> => {
+  if (!token) {
+    throw new UnauthorizedError("Invalid JWT token: Empty Token");
+  }
   const { payload } = await jose.jwtVerify(token, getJwtSecretKey(), {
     algorithms: ["HS256"],
   });

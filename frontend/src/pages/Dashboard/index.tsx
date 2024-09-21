@@ -26,7 +26,7 @@ export default function Dashboard() {
         setLoading(false);
         dispatch(setUser(meDetails.name, meDetails.email) as any);
       } catch (error) {
-        toast.error("Failed to fetch menus");
+        console.error(error);
       } finally {
         setLoading(false);
       }

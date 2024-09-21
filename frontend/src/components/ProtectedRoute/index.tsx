@@ -24,10 +24,8 @@ export default function ProtectedRoute() {
         setIsLoading(false);
       })
       .catch(() => {
-        toast.error("You are not allowed to view this Page!");
-        navigate("/");
-      })
-      .finally(() => [setIsLoading(false)]);
+        navigate("/login");
+      });
   }, [location.pathname]);
   if (isLoading) {
     return (

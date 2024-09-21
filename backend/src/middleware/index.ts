@@ -3,6 +3,7 @@ import { NotFoundError, UnauthorizedError } from "../error";
 import { TOKEN_STRING } from "../constants";
 import { getUserFromJwtToken } from "../utils";
 import RolesModel from "../models/roles.model";
+import { Users } from "@prisma/client";
 
 export const validateJwtMiddleware = async (
   req: Request,
@@ -11,12 +12,16 @@ export const validateJwtMiddleware = async (
 ) => {
   const cookies = req.cookies;
   if (!cookies?.[TOKEN_STRING]) {
-    throw new UnauthorizedError("Unauthorized");
+    return res.status(401).send("Unauthorized");
   }
-  const user = await getUserFromJwtToken(cookies[TOKEN_STRING]);
-  // @ts-ignore - Add user to the request object
-  req.user = user;
-  next();
+  try {
+    const user = await getUserFromJwtToken(cookies[TOKEN_STRING]);
+    // @ts-ignore - Add user to the request object
+    req.user = user;
+    next();
+  } catch (error) {
+    return res.status(401).send("Unauthorized");
+  }
 };
 
 export const onlyAdminAllowed = async (
@@ -25,7 +30,12 @@ export const onlyAdminAllowed = async (
   next: NextFunction
 ) => {
   const cookies = req.cookies;
-  const user = await getUserFromJwtToken(cookies[TOKEN_STRING]);
+  let user: Users;
+  try {
+    user = await getUserFromJwtToken(cookies[TOKEN_STRING]);
+  } catch (error) {
+    return res.status(401).send("Unauthorized");
+  }
   if (!user) {
     next(new NotFoundError("User not found"));
     return;
